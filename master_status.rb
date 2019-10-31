@@ -32,8 +32,8 @@ result.each do |project|
     branches << {
       project_name: URI.decode(project_name),
       branch_name: URI.decode(branch_name),
-      status: branch['recent_builds'][0]['status'],
-      last_build: branch['recent_builds'][0]['added_at'],
+      status: branch['running_builds'].length > 0 ? 'running' : branch['recent_builds'][0]['outcome'],
+      last_build: branch['running_builds'].length > 0 ? branch['running_builds'][0]['added_at'] : branch['recent_builds'][0]['added_at'],
       url: "https://circleci.com/gh/#{project_name}/tree/#{branch_name}"
     }
   end
@@ -42,11 +42,11 @@ end
 xmlstring = "<?xml version=\"1.0\"?>\n<items>\n"
 
 items = branches
-.sort {|a, b| DateTime.parse(b[:last_build]) <=> DateTime.parse(a[:last_build])}
+.sort { |a, b| DateTime.parse(b[:last_build]) <=> DateTime.parse(a[:last_build]) }
 .map do |branch, i|
   if branch[:status] =~ /success|fixed/
     icon = 'green.png'
-  elsif branch[:status] =~ /running|queued|scheduled/
+  elsif branch[:status] == 'running'
     icon = 'blue.png'
   else
     icon = 'red.png'
