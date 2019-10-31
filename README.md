@@ -7,7 +7,7 @@
 
 ## Setup
 
-1. Clone and build the workflow
+1. Download and install workflow https://github.com/jplaut/alfred-circleci-workflow/releases
 
 ### Setting Workflow Environment Variables
 
